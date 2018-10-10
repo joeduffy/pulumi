@@ -42,6 +42,13 @@ RUN apt-get install -y ca-certificates curl gnupg jq
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get install -y nodejs build-essential
 
+# Install gcloud so we can speak to GCP.
+# TODO: install Azure and AWS CLIs also? Possibly unsustainable, should we create specialized Dockerfiles?
+RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | \
+    tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    apt-get update -y && apt-get install -y google-cloud-sdk
+
 # Copy the entrypoint script.
 COPY ./scripts/docker-entry.sh /usr/bin/run-pulumi
 
