@@ -5,6 +5,10 @@ set -e
 
 # If the PULUMI_CI variable is set, we'll do some extra things to make common tasks easier.
 if [ ! -z "$PULUMI_CI" ]; then
+    # Capture the PWD before we go and potentially change it.
+    ROOT=$(pwd)
+
+    # If the root of the Pulumi project isn't the root of the repo, CD into it.
     if [ ! -z "$PULUMI_ROOT" ]; then
         cd $PULUMI_ROOT
     fi
@@ -39,8 +43,8 @@ if [ ! -z "$PULUMI_CI" ]; then
 
     # Respect the branch mappings file for stack selection. Note that this is *not* required, but if the file
     # is missing, the caller of this script will need to pass `-s <stack-name>` to specify the stack explicitly.
-    if [ ! -z "$BRANCH" ] && [ -e .pulumi/ci.json ]; then
-        PULUMI_STACK_NAME=$(cat .pulumi/ci.json | jq -r ".\"$BRANCH\"")
+    if [ ! -z "$BRANCH" ] && [ -e $ROOT/.pulumi/ci.json ]; then
+        PULUMI_STACK_NAME=$(cat $ROOT/.pulumi/ci.json | jq -r ".\"$BRANCH\"")
         if [ "$PULUMI_STACK_NAME" != "null" ]; then
             pulumi stack select $PULUMI_STACK_NAME
         else
