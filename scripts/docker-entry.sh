@@ -5,6 +5,10 @@ set -e
 
 # If the PULUMI_CI variable is set, we'll do some extra things to make common tasks easier.
 if [ ! -z "$PULUMI_CI" ]; then
+    if [ ! -z "$PULUMI_ROOT" ]; then
+        cd $PULUMI_ROOT
+    fi
+
     # Detect the CI system and configure variables so that we get good Pulumi workflow and GitHub App support.
     if [ ! -z "$GITHUB_WORKFLOW" ]; then
         export PULUMI_CI_SYSTEM="GitHub"
