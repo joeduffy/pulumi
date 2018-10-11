@@ -68,7 +68,7 @@ fi
 if [ ! -z "$GCLOUD_KEY" ]; then
     GCLOUD_KEYFILE=$(mktemp)
     echo "$GCLOUD_KEY" > $GCLOUD_KEYFILE
-    gcloud auth activate-service-account --key-file=$GCLOUD_KEYFILE
+    gcloud auth activate-service-account --key-file=$GCLOUD_KEYFILE --project=$(pulumi config get gcp:project)
 fi
 
 # Next, lazily install packages if required.
