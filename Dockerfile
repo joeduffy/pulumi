@@ -35,16 +35,18 @@ FROM debian:stretch
 
 # Install some runtime pre-reqs.
 RUN apt-get update -y
-RUN apt-get install -y ca-certificates curl gnupg jq git
+RUN apt-get install -y ca-certificates curl software-properties-common gnupg jq git
 
 # Install the necessary runtimes.
 #     - Node.js 10.x
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get install -y nodejs build-essential
 
-# Install img so we can do Docker builds inside the container.
-RUN curl -fSL "https://github.com/genuinetools/img/releases/download/v0.5.1/img-linux-amd64" \
-    -o "/usr/local/bin/docker" && chmod a+x "/usr/local/bin/docker"
+# Install Docker so we can build things.
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -  && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+    apt-get update -y && \
+    apt-get install -y docker-ce
 
 # Install gcloud so we can speak to GCP.
 # TODO: install Azure and AWS CLIs also? Possibly unsustainable, should we create specialized Dockerfiles?
